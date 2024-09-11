@@ -21,6 +21,47 @@ const formSchema = z.object({
   targetHeartRate: z.number().positive().optional(),
 });
 
+const InputField = ({ name, label, type = "number", control, t }) => (
+  <FormField
+    control={control}
+    name={name}
+    render={({ field }) => (
+      <FormItem>
+        <FormLabel>{label}</FormLabel>
+        <FormControl>
+          <Input type={type} {...field} onChange={(e) => field.onChange(type === "number" ? parseFloat(e.target.value) : e.target.value)} />
+        </FormControl>
+        <FormMessage />
+      </FormItem>
+    )}
+  />
+);
+
+const SelectField = ({ name, label, options, control, t }) => (
+  <FormField
+    control={control}
+    name={name}
+    render={({ field }) => (
+      <FormItem>
+        <FormLabel>{label}</FormLabel>
+        <Select onValueChange={field.onChange} defaultValue={field.value}>
+          <FormControl>
+            <SelectTrigger>
+              <SelectValue placeholder={t[`select${name.charAt(0).toUpperCase() + name.slice(1)}`]} />
+            </SelectTrigger>
+          </FormControl>
+          <SelectContent>
+            {options.map(option => (
+              <SelectItem key={option} value={option}>{t[option]}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <FormMessage />
+      </FormItem>
+    )}
+  />
+);
+
 const InputForm = ({ onCalculate, language }) => {
   const t = translations[language];
 
@@ -47,155 +88,22 @@ const InputForm = ({ onCalculate, language }) => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <FormField
-          control={form.control}
-          name="age"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{t.age}</FormLabel>
-              <FormControl>
-                <Input type="number" {...field} onChange={(e) => field.onChange(parseInt(e.target.value))} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+        <InputField name="age" label={t.age} control={form.control} t={t} />
+        <SelectField name="gender" label={t.gender} options={['male', 'female']} control={form.control} t={t} />
+        <InputField name="weight" label={`${t.weight} (kg)`} control={form.control} t={t} />
+        <InputField name="height" label={`${t.height} (cm)`} control={form.control} t={t} />
+        <SelectField 
+          name="activityLevel" 
+          label={t.activityLevel} 
+          options={['sedentary', 'light', 'moderate', 'active', 'veryActive']} 
+          control={form.control} 
+          t={t} 
         />
-        <FormField
-          control={form.control}
-          name="gender"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{t.gender}</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder={t.selectGender} />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="male">{t.male}</SelectItem>
-                  <SelectItem value="female">{t.female}</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="weight"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{t.weight} (kg)</FormLabel>
-              <FormControl>
-                <Input type="number" {...field} onChange={(e) => field.onChange(parseFloat(e.target.value))} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="height"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{t.height} (cm)</FormLabel>
-              <FormControl>
-                <Input type="number" {...field} onChange={(e) => field.onChange(parseInt(e.target.value))} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="activityLevel"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{t.activityLevel}</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder={t.selectActivityLevel} />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="sedentary">{t.sedentary}</SelectItem>
-                  <SelectItem value="light">{t.light}</SelectItem>
-                  <SelectItem value="moderate">{t.moderate}</SelectItem>
-                  <SelectItem value="active">{t.active}</SelectItem>
-                  <SelectItem value="veryActive">{t.veryActive}</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="waist"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{t.waist} (cm)</FormLabel>
-              <FormControl>
-                <Input type="number" {...field} onChange={(e) => field.onChange(parseFloat(e.target.value))} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="hip"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{t.hip} (cm)</FormLabel>
-              <FormControl>
-                <Input type="number" {...field} onChange={(e) => field.onChange(parseFloat(e.target.value))} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="neck"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{t.neck} (cm)</FormLabel>
-              <FormControl>
-                <Input type="number" {...field} onChange={(e) => field.onChange(parseFloat(e.target.value))} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="benchPress"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{t.benchPress} (kg)</FormLabel>
-              <FormControl>
-                <Input type="number" {...field} onChange={(e) => field.onChange(parseFloat(e.target.value))} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="targetHeartRate"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{t.targetHeartRate} (bpm)</FormLabel>
-              <FormControl>
-                <Input type="number" {...field} onChange={(e) => field.onChange(parseInt(e.target.value))} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <InputField name="waist" label={`${t.waist} (cm)`} control={form.control} t={t} />
+        <InputField name="hip" label={`${t.hip} (cm)`} control={form.control} t={t} />
+        <InputField name="neck" label={`${t.neck} (cm)`} control={form.control} t={t} />
+        <InputField name="benchPress" label={`${t.benchPress} (kg)`} control={form.control} t={t} />
+        <InputField name="targetHeartRate" label={`${t.targetHeartRate} (bpm)`} control={form.control} t={t} />
         <Button type="submit">{t.calculateButton}</Button>
       </form>
     </Form>
